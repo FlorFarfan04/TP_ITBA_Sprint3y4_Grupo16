@@ -13,34 +13,6 @@ El proyecto está dividido en dos partes independientes:
 •	server/ → Backend desarrollado con Node.js y Express.
 Ambas partes se ejecutan en servidores y puertos diferentes y se comunican mediante una API REST.
 ________________________________________
-📁 Arquitectura del proyecto
-muebleria-hermanos-jota/
-│
-├── client/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   ├── ProductCard.jsx
-│   │   │   ├── ProductList.jsx
-│   │   │   ├── ProductDetail.jsx
-│   │   │   └── ContactForm.jsx
-│   │   │
-│   │   ├── App.jsx
-│   │   └── estilos.css
-│   │   └── main.jsx
-│   │
-│   ├── package.json
-│   └── ...
-│
-└── server/
-    ├── data/
-    │   └── productos.js
-    ├── routes/
-    │   └── productos.routes.js
-    ├── index.js
-    ├── package.json
-    └── ...
 
 Frontend
 El frontend está desarrollado con React y utiliza componentes para dividir la interfaz en partes reutilizables.
