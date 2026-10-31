@@ -16,6 +16,21 @@ app.use((req, res, next) => {
 
 app.use("/api/productos", productosRouter);
 
+app.use((req, res, next) => {
+  const error = new Error(`Ruta no encontrada: ${req.method} ${req.originalUrl}`);
+  error.status = 404;
+  next(error);
+});
+
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const message = statusCode === 500 ? "Error interno del servidor" : err.message;
+
+  if (statusCode === 500) console.error(err);
+
+  res.status(statusCode).json({ error: message });
+});
+
 conectarDB().then(() => {
   app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
 });
