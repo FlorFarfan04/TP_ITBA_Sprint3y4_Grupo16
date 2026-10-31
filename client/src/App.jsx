@@ -1,17 +1,47 @@
+
+
 import { useState, useEffect } from "react";
+import { Routes, Route, useNavigate, useParams } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
-import ProductList from "./components/ProductList";
 import ProductDetail from "./components/ProductDetail";
 import ContactForm from "./components/ContactForm";
+import NuevoProductoForm from "./components/NuevoProductoForm";
 
-const API_URL = "http://localhost:3000/api/productos";
+import Catalogo from "./pages/Catalogo";
+
+const API_URL = "/api/productos";
+
+function DetalleProducto({ productos, onAgregar, cargando }) {
+
+  const { id } = useParams();
+
+  const producto = productos.find(
+    (producto) => producto._id === id || producto.id === id
+  );
+
+  if (cargando) {
+    return <p>Cargando producto...</p>;
+  }
+
+  if (!producto) {
+    return <p>No encontramos el producto solicitado.</p>;
+  }
+
+  return (
+    <ProductDetail
+      producto={producto}
+      onAgregar={onAgregar}
+      onVolver={() => window.history.back()}
+    />
+  );
+}
 
 function App() {
-  
-  const [vista, setVista] = useState("inicio");
-  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+
+  const navigate = useNavigate();
 
   const [carrito, setCarrito] = useState([]);
   const [productos, setProductos] = useState([]);
@@ -19,21 +49,29 @@ function App() {
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
+
     async function cargarProductos() {
+
       try {
         const respuesta = await fetch(API_URL);
+
         if (!respuesta.ok) {
           throw new Error("El servidor respondió: " + respuesta.status);
         }
+
         const datos = await respuesta.json();
         setProductos(datos);
+
       } catch (err) {
         setError(err.message);
+
       } finally {
         setCargando(false);
       }
     }
+
     cargarProductos();
+
   }, []);
 
   function agregarAlCarrito(producto) {
@@ -41,51 +79,95 @@ function App() {
   }
 
   function irA(nuevaVista) {
-    setVista(nuevaVista);
-    setProductoSeleccionado(null);
+
+    const rutas = {
+      inicio: "/",
+      productos: "/productos",
+      contacto: "/contacto"
+    };
+
+    navigate(rutas[nuevaVista]);
     window.scrollTo(0, 0);
   }
 
-  function verDetalle(producto) {
-    setVista("productos");
-    setProductoSeleccionado(producto);
-    window.scrollTo(0, 0);
+  function sumarProducto(nuevo) {
+    setProductos((actuales) => [...actuales, nuevo]);
   }
 
   return (
     <>
-      <Navbar cantidad={carrito.length} vista={vista} onNavegar={irA} />
+      <Navbar cantidad={carrito.length} />
 
       <main>
-        {vista === "inicio" && (
-          <Home
-            productos={productos}
-            cargando={cargando}
-            error={error}
-            onNavegar={irA}
-            onAgregar={agregarAlCarrito}
-            onVerDetalle={verDetalle}
+
+        <Routes>
+
+          <Route
+            path="/"
+            element={
+              <Home
+                productos={productos}
+                cargando={cargando}
+                error={error}
+                onNavegar={irA}
+                onAgregar={agregarAlCarrito}
+                onVerDetalle={(producto) =>
+                  navigate(`/productos/${producto._id || producto.id}`)
+                }
+              />
+            }
           />
-        )}
 
-        {vista === "productos" &&
-          (productoSeleccionado ? (
-            <ProductDetail
-              producto={productoSeleccionado}
-              onAgregar={agregarAlCarrito}
-              onVolver={() => setProductoSeleccionado(null)}
-            />
-          ) : (
-            <ProductList
-              productos={productos}
-              cargando={cargando}
-              error={error}
-              onAgregar={agregarAlCarrito}
-              onVerDetalle={verDetalle}
-            />
-          ))}
+          <Route
+            path="/productos"
+            element={
+              <Catalogo
+                productos={productos}
+                cargando={cargando}
+                error={error}
+                onAgregar={agregarAlCarrito}
+                onVerDetalle={(producto) =>
+                  navigate(`/productos/${producto._id || producto.id}`)
+                }
+              />
+            }
+          />
 
-        {vista === "contacto" && <ContactForm />}
+          <Route
+            path="/productos/:id"
+            element={
+              <DetalleProducto
+                productos={productos}
+                cargando={cargando}
+                onAgregar={agregarAlCarrito}
+              />
+            }
+          />
+
+          <Route
+            path="/contacto"
+            element={<ContactForm />}
+          />
+
+          <Route
+            path="/admin/crear-producto"
+            element={
+              <NuevoProductoForm
+                onCreado={(nuevo) => {
+                  sumarProducto(nuevo);
+                  navigate("/productos");
+                }}
+              />
+            }
+          />
+
+          <Route
+            path="*"
+            element={<h2>Página no encontrada (404)</h2>}
+          />
+
+        </Routes>
+
       </main>
 
       <Footer />
@@ -94,3 +176,5 @@ function App() {
 }
 
 export default App;
+
+

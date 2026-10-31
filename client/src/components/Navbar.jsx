@@ -1,46 +1,42 @@
-function Navbar({ vista, onNavegar, cantidad }) {
-  
-  const activa = vista === "detalle" ? "productos" : vista;
+import { Link, useLocation } from "react-router-dom";
+
+function Navbar({ cantidad }) {
+
+  const location = useLocation();
 
   const enlaces = [
-    { clave: "inicio", texto: "Inicio" },
-    { clave: "productos", texto: "Productos" },
-    { clave: "contacto", texto: "Contacto" },
+    { ruta: "/", texto: "Inicio" },
+    { ruta: "/productos", texto: "Productos" },
+    { ruta: "/contacto", texto: "Contacto" },
+    { ruta: "/admin/crear-producto", texto: "Nuevo producto" }
   ];
 
   return (
     <header className="encabezado">
       <div className="contenedor nav">
-        <a
-          href="#"
-          className="nav__marca"
-          onClick={(e) => {
-            e.preventDefault();
-            onNavegar("inicio");
-          }}
-        >
+
+        <Link to="/" className="nav__marca">
           <img src="/img/logo.svg" alt="" className="nav__logo" />
           Hermanos <span>Jota</span>
-        </a>
+        </Link>
 
         <input className="nav__checkbox" type="checkbox" id="menu-toggle" />
+
         <label className="nav__toggle" htmlFor="menu-toggle">
           <span aria-hidden="true">☰</span>
         </label>
 
         <ul className="nav__menu" id="menu">
           {enlaces.map((enlace) => (
-            <li key={enlace.clave}>
-              <a
-                href="#"
-                aria-current={activa === enlace.clave ? "page" : undefined}
-                onClick={(e) => {
-                  e.preventDefault();
-                  onNavegar(enlace.clave);
-                }}
+            <li key={enlace.ruta}>
+              <Link
+                to={enlace.ruta}
+                aria-current={
+                  location.pathname === enlace.ruta ? "page" : undefined
+                }
               >
                 {enlace.texto}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -48,6 +44,7 @@ function Navbar({ vista, onNavegar, cantidad }) {
         <span className="boton-carrito">
           Carrito (<span id="contador-carrito">{cantidad}</span>)
         </span>
+
       </div>
     </header>
   );

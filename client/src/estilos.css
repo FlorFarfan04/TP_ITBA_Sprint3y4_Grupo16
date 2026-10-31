@@ -639,3 +639,96 @@ p.estado-carga {
     gap: 2rem; 
   }
 }
+
+
+/* FORMULARIO DE ALTA DE PRODUCTOS */
+
+.seccion--admin {
+  min-height: 75vh;
+  padding: 3rem 1rem;
+}
+
+.formulario-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: 20px;
+}
+
+.formulario-producto__titulo {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  color: #2e1b12;
+}
+
+.formulario-producto__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.formulario-producto__campo label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a0522d;
+}
+
+.formulario-producto__campo input,
+.formulario-producto__campo textarea {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid #a0522d;
+  border-radius: 12px;
+  background-color: #fffdf9;
+  color: #2e1b12;
+  font: inherit;
+}
+
+.formulario-producto__campo textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.formulario-producto__campo input:focus,
+.formulario-producto__campo textarea:focus {
+  outline: none;
+  border-color: #d4a437;
+  box-shadow: 0 0 0 2px rgb(212 164 55 / 25%);
+}
+
+.formulario-producto__boton {
+  align-self: center;
+  width: 100%;
+  max-width: 250px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #87a96b;
+  border-radius: 20px;
+  background-color: #87a96b;
+  color: #fffdf9;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.formulario-producto__boton:hover {
+  background-color: #a0522d;
+  border-color: #a0522d;
+}
+
+.formulario-producto__mensaje {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .formulario-producto {
+    padding: 1.25rem;
+  }
+}
