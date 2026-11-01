@@ -1,191 +1,110 @@
-# TP_ITBA_Sprint3y4_Grupo16
+# TP_ITBA_Sprint5y6_Grupo16
+# Mueblería Hermanos Jota
+
+## Integrantes
+
+-	Casaz Candela
+-	Farfán Evelyn Florencia
+
+---
+
+## Descripción
+
+Mueblería Hermanos Jota es una aplicación web con React en el frontend y Node.js + Express + MongoDB en el backend.
+
+Permite visualizar un catálogo de productos, consultar el detalle de cada uno, agregarlos a un carrito, enviar un formulario de contacto y administrar productos (crear, editar y eliminar).
+
+El proyecto tiene dos partes independientes que se comunican mediante una API REST:
+
+- client/ → Frontend (React + Vite).
+- server/ → Backend (Node.js, Express, Mongoose, MongoDB Atlas).
+
+## Despliegues  
+
+- **Frontend:** https://tp-itba-sprint3y4-grupo16.vercel.app/
+- **Backend (API):** https://tp-itba-sprint3y4-grupo16.onrender.com/ 
+- **Endpoint de productos:** https://tp-itba-sprint3y4-grupo16.onrender.com/api/productos
 
 
-Mueblería Hermanos Jota
+---
 
-Integrantes
+## Frontend 
 
-Casaz Candela
+Desarrollado con React, Vite y React Router DOM. Consume la API REST del backend para listar, ver, crear, editar y eliminar productos.
 
-Farfán Evelyn Florencia
+### Funcionalidades
 
-________________________________________
-Descripción
+- **Catálogo conectado a la API:** `App.jsx` consulta `GET /api/productos` con `fetch` al montarse y pasa productos, estado de carga y error a `Home` y `Catalogo`. `ProductList` los muestra en tarjetas y permite filtrarlos con un buscador.
+- **Detalle de producto:** `DetalleProducto` obtiene el `id` con `useParams` y consulta `GET /api/productos/:id`. `ProductDetail` muestra los datos del producto y permite agregarlo al carrito.
+- **Alta de productos:** `ProductoForm` es un formulario controlado con `useState` que envía un `POST`. Nombre y precio son obligatorios.
+- **Edición:** el mismo formulario, en la ruta con `:id`, carga el producto desde la API, precarga los campos y envía un `PUT`. Se accede con el botón "Editar producto" del detalle.
+- **Eliminación:** el botón "Eliminar producto" del detalle pide confirmación en pantalla ("Sí, eliminar" / "Cancelar") antes de enviar el `DELETE`.
+- **Carrito:** estado en `App.jsx`; el contador llega al `Navbar` por props.
 
-Mueblería Hermanos Jota es una aplicación web desarrollada con React en el frontend y Node.js + Express en el backend.
+---
 
-La aplicación permite visualizar un catálogo de productos, consultar el detalle de cada producto, agregar productos a un carrito de compras y enviar un formulario de contacto.
+## Backend  [BACKEND]
 
-El proyecto está dividido en dos partes independientes:
+Desarrollado con Node.js, Express y Mongoose. Los datos se guardan en **MongoDB Atlas** (base `muebleriaJotaDB`, colección `products`).
 
-•	client/ → Frontend desarrollado con React.
+### Modelo Product
 
-•	server/ → Backend desarrollado con Node.js y Express.
+| Campo | Tipo | Notas |
+|---|---|---|
+| `nombre` | String | Obligatorio |
+| `precio` | Number | Obligatorio, no puede ser negativo |
+| `destacado` | Boolean | Por defecto `false` |
+| `imagen`, `imagenURL`, `medidas`, `materiales`, `acabado`, `descripcion`, `info` | String | Opcionales |
+| `stock` | Number | Opcional, no puede ser negativo |
+| `createdAt`, `updatedAt` | Date | Automáticos (`timestamps`) |
 
-Ambas partes se ejecutan en servidores y puertos diferentes y se comunican mediante una API REST.
+### Endpoints
 
-________________________________________
+| Método | Ruta | Descripción | Respuestas |
+|---|---|---|---|
+| GET | `/api/productos` | Devuelve todos los productos | 200 |
+| GET | `/api/productos/:id` | Devuelve un producto por `_id` | 200 / 400 / 404 |
+| POST | `/api/productos` | Crea un producto | 201 / 400 |
+| PUT | `/api/productos/:id` | Actualiza un producto existente | 200 / 400 / 404 |
+| DELETE | `/api/productos/:id` | Elimina un producto | 200 / 400 / 404 |
 
-Frontend
+### Variables de entorno del backend
 
-El frontend está desarrollado con React y utiliza componentes para dividir la interfaz en partes reutilizables.
+Crear `server/.env` (no subirlo a GitHub; debe estar en `.gitignore`):
 
-Los principales componentes son:
+| Variable | Descripción |
+|---|---|
+| `MONGO_URI` | String de conexión de MongoDB Atlas, con el nombre de la base antes del `?` |
+| `PORT` | Opcional. En local usa 3000; Render lo asigna solo. |
 
-•	Navbar: navegación y contador de productos del carrito.
 
-•	Footer: pie de página.
+MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/muebleriaJotaDB?retryWrites=true&w=majority
 
-•	ProductCard: muestra la información resumida de un producto.
 
-•	ProductList: obtiene y renderiza la lista de productos.
+---
 
-•	ProductDetail: muestra la información detallada de un producto.
+## Instalación y ejecución en local
 
-•	ContactForm: formulario de contacto controlado mediante useState.
+Requisitos: Node.js 20.6 o superior y npm.
 
-El carrito de compras se maneja como estado en App.js y el contador se comunica al componente Navbar mediante props.
-
-Los productos se obtienen mediante una petición fetch al backend.
-
-________________________________________
-Backend
-
-El backend está desarrollado con Node.js y Express.
-
-Los productos se almacenan inicialmente en un archivo JavaScript local (data/productos.js) como un array de objetos.
-La API cuenta con las siguientes rutas:
-
-GET /api/productos
-
-GET /api/productos/:id
-
-El backend también utiliza:
-
-•	express.json() para procesar futuras peticiones con JSON.
-
-•	CORS para permitir la comunicación con el frontend.
-
-•	Un middleware de logging para registrar método y URL de cada petición.
-
-•	express.Router() para organizar las rutas.
-
-•	Un manejador de rutas inexistentes (404).
-
-•	Un manejador centralizado de errores.
-
-________________________________________
-Instalación y ejecución
-
-Requisitos
-
-•	Node.js
-
-•	npm
-________________________________________
-Backend
-
-Desde una terminal, ingresar a la carpeta del backend:
+### Backend
 
 cd server
-
-Instalar las dependencias:
-
 npm install
+# crear server/.env con MONGO_URI
+npm run seed
+npm run dev # http://localhost:3000
 
-Iniciar el servidor:
-
-npm run dev
-
-El backend se ejecuta en:
-
-http://localhost:3000
-
-________________________________________
-Frontend
-
-Abrir otra terminal e ingresar a la carpeta del frontend:
+### Frontend
 
 cd client
-
-Instalar las dependencias:
-
 npm install
+npm run dev  # http://localhost:5173 (o en el puerto que indique React/Vite)
 
-Iniciar el servidor de desarrollo:
+Ambos deben estar corriendo a la vez: el proxy de Vite envía las llamadas `/api` al backend en el puerto 3000.
 
-npm run dev
+## Tecnologías utilizadas 
 
-El frontend se ejecuta en el puerto indicado por React/Vite al iniciar el servidor, por ejemplo:
-
-http://localhost:5173
-
-El frontend y el backend deben estar ejecutándose simultáneamente para que la aplicación pueda obtener los productos desde la API.
-
-________________________________________
-Comunicación entre Frontend y Backend
-
-El frontend realiza peticiones HTTP al backend para obtener los productos.
-
-Por ejemplo:
-
-fetch("http://localhost:3000/api/productos")
-
-El backend responde los productos en formato JSON y React utiliza esa información para renderizar la interfaz.
-
-La utilización de CORS permite que el frontend pueda realizar peticiones al backend aunque ambos se encuentren ejecutándose en diferentes puertos.
-
-________________________________________
-Decisiones tomadas
-
-Separación de Frontend y Backend
-
-Se decidió separar el proyecto en las carpetas client y server para mantener diferenciadas las responsabilidades de la interfaz y la lógica del servidor.
-
-Componentización en React
-
-La interfaz se dividió en componentes independientes para facilitar la reutilización, organización y mantenimiento del código.
-
-API REST
-
-Los productos son proporcionados por el backend mediante endpoints REST en lugar de estar definidos directamente dentro de los componentes de React.
-
-Estado del carrito
-
-El carrito se mantiene como estado en App.js, permitiendo compartir la información necesaria con otros componentes mediante props.
-
-Formulario controlado
-
-El formulario de contacto utiliza useState para mantener el estado de sus campos y controlar sus valores desde React.
-
-Manejo de estados de carga y error
-
-Al obtener los productos mediante fetch, se contemplan estados de carga y error para mejorar el comportamiento de la aplicación ante diferentes situaciones.
-
-Datos locales
-
-Para esta etapa del proyecto, los productos se almacenan en un archivo JavaScript local. Esto permite trabajar con la API sin necesidad de incorporar una base de datos.
-
-________________________________________
-Tecnologías utilizadas
-
-Frontend
-
-•	React
-
-•	JavaScript
-
-•	HTML
-
-•	CSS
-
-Backend
-
-•	Node.js
-
-•	Express
-
-•	CORS
-
-•	Nodemon
-
+**Frontend:** React, Vite, React Router DOM, JavaScript, HTML, CSS.
+**Backend:** Node.js, Express, Mongoose, MongoDB Atlas, CORS, Nodemon.
+**Despliegue:** Render (backend) y Vercel (frontend).
