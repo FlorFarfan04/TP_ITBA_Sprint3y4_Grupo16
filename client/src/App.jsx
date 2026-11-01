@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 
@@ -14,7 +12,7 @@ import Catalogo from "./pages/Catalogo";
 
 const API_URL = "/api/productos";
 
-function DetalleProducto({ onAgregar }) {
+function DetalleProducto({ onAgregar, onEliminar }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
@@ -59,9 +57,10 @@ function DetalleProducto({ onAgregar }) {
 
   return (
     <ProductDetail
-      producto={producto}
-      onAgregar={onAgregar}
-      onVolver={() => navigate("/productos")}
+    producto={producto}
+    onAgregar={onAgregar}
+    onEliminar={onEliminar}
+    onVolver={() => navigate("/productos")}
     />
   );
 }
@@ -136,9 +135,30 @@ function App() {
       );
     }
 
-    // Si es nuevo, lo agregamos al catálogo.
     return [...actuales, productoGuardado];
   });
+}
+
+async function eliminarProducto(id) {
+  try {
+    const respuesta = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo eliminar el producto");
+    }
+
+    setProductos((actuales) =>
+      actuales.filter((producto) => producto._id !== id)
+    );
+
+    navigate("/productos");
+
+  } catch (error) {
+    console.error("Error al eliminar:", error);
+    alert("Ocurrió un error al eliminar el producto.");
+  }
 }
 
   return (
@@ -181,10 +201,13 @@ function App() {
           />
 
           <Route
-          path="/productos/:id"
-          element={
-          <DetalleProducto onAgregar={agregarAlCarrito} />
-          }
+            path="/productos/:id"
+            element={
+              <DetalleProducto
+              onAgregar={agregarAlCarrito}
+              onEliminar={eliminarProducto}
+              />
+            }
           />
 
           <Route

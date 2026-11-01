@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function ProductDetail({ producto, onAgregar, onVolver }) {
+function ProductDetail({ producto, onAgregar, onVolver, onEliminar }) {
   const [agregado, setAgregado] = useState(false);
+  const [confirmando, setConfirmando] = useState(false);
   const navigate = useNavigate();
 
   // Los productos originales usan "imagen".
@@ -32,6 +33,10 @@ function ProductDetail({ producto, onAgregar, onVolver }) {
     onAgregar(producto);
     setAgregado(true);
   }
+
+  async function manejarEliminar() {
+  await onEliminar(producto._id);
+}
 
   const precioFormateado = Number(producto.precio).toLocaleString("es-AR", {
     style: "currency",
@@ -127,18 +132,25 @@ function ProductDetail({ producto, onAgregar, onVolver }) {
             </button>
 
             {confirmando ? (
+            <div>
               <p>
-              ¿Eliminar "{producto.nombre}"?{''}
-              <button onClick={eliminar}>Si, eliminar</button>
-              <button onClick={() => setConfirmando(false)}>Cancelar</button>
-            </p>
-            ) : (
-              <button onClick={() => setConfirmando(true)}>Eliminar</button>
+              ¿Eliminar "{producto.nombre}"? Esta acción no se puede deshacer.
+              </p>
 
+            <button className="boton boton--primario" onClick={manejarEliminar}>
+              Sí, eliminar
+            </button>
+
+            <button className="boton boton--eliminar" onClick={() => setConfirmando(false)}>
+              Cancelar
+            </button>
+            </div>
+            ) : (
+            <button className="boton boton--eliminar" onClick={() => setConfirmando(true)}>
+            Eliminar producto
+            </button>
             )}
             
-
-
           </div>
 
           {agregado && (
