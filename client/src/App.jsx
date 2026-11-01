@@ -3,8 +3,8 @@ import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./components/Home";
-import ProductDetail from "./components/ProductDetail";
+import Home from "./pages/Home";
+import ProductDetail from "./pages/ProductDetail";
 import ContactForm from "./components/ContactForm";
 import ProductoForm from "./components/ProductoForm";
 
