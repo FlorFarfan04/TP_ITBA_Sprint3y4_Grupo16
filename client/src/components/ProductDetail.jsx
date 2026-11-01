@@ -1,14 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function ProductDetail({ producto, onAgregar, onVolver }) {
   const [agregado, setAgregado] = useState(false);
+  const navigate = useNavigate();
 
   // Los productos originales usan "imagen".
   // Los nuevos usan "imagenUrl".
   const imagenProducto =
-    producto.imagenUrl || producto.imagen || "/img/sin-imagen.png";
+    producto.imagenUrl || producto.imagen || "/img/escritorioCosta.png";
 
-  // Las imágenes del catálogo original están dentro de public.
   const rutaImagen = imagenProducto.startsWith("http")
     ? imagenProducto
     : imagenProducto.startsWith("/")
@@ -16,9 +17,16 @@ function ProductDetail({ producto, onAgregar, onVolver }) {
       : `/${imagenProducto}`;
 
   function manejarErrorImagen(event) {
-    event.currentTarget.onerror = null;
-    event.currentTarget.src = "/img/sin-imagen.png";
+  const imagen = event.currentTarget;
+
+  if (imagen.dataset.fallback === "true") {
+    imagen.style.display = "none";
+    return;
   }
+
+  imagen.dataset.fallback = "true";
+  imagen.src = "/img/escritorioCosta.png";
+}
 
   function manejarAgregar() {
     onAgregar(producto);
@@ -105,11 +113,31 @@ function ProductDetail({ producto, onAgregar, onVolver }) {
             </button>
 
             <button
+            className="boton boton--salvia"
+            onClick={() => navigate(`/admin/editar-producto/${producto._id}`)}
+            >
+              Editar producto
+              </button>
+
+            <button
               className="boton boton--salvia"
               onClick={onVolver}
             >
               Volver al catálogo
             </button>
+
+            {confirmando ? (
+              <p>
+              ¿Eliminar "{producto.nombre}"?{''}
+              <button onClick={eliminar}>Si, eliminar</button>
+              <button onClick={() => setConfirmando(false)}>Cancelar</button>
+            </p>
+            ) : (
+              <button onClick={() => setConfirmando(true)}>Eliminar</button>
+
+            )}
+            
+
 
           </div>
 

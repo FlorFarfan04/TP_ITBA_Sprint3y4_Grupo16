@@ -8,22 +8,49 @@ import Footer from "./components/Footer";
 import Home from "./components/Home";
 import ProductDetail from "./components/ProductDetail";
 import ContactForm from "./components/ContactForm";
-import NuevoProductoForm from "./components/NuevoProductoForm";
+import ProductoForm from "./components/ProductoForm";
 
 import Catalogo from "./pages/Catalogo";
 
 const API_URL = "/api/productos";
 
-function DetalleProducto({ productos, onAgregar, cargando }) {
-
+function DetalleProducto({ onAgregar }) {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [producto, setProducto] = useState(null);
+  const [cargandoDetalle, setCargandoDetalle] = useState(true);
+  const [errorDetalle, setErrorDetalle] = useState(null);
 
-  const producto = productos.find(
-    (producto) => producto._id === id || producto.id === id
-  );
+  useEffect(() => {
+    async function cargarProducto() {
+      try {
+        setCargandoDetalle(true);
+        setErrorDetalle(null);
 
-  if (cargando) {
+        const respuesta = await fetch(`${API_URL}/${id}`);
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          throw new Error(datos.error || "No se pudo cargar el producto");
+        }
+
+        setProducto(datos);
+      } catch (error) {
+        setErrorDetalle(error.message);
+      } finally {
+        setCargandoDetalle(false);
+      }
+    }
+
+    cargarProducto();
+  }, [id]);
+
+  if (cargandoDetalle) {
     return <p>Cargando producto...</p>;
+  }
+
+  if (errorDetalle) {
+    return <p className="error">{errorDetalle}</p>;
   }
 
   if (!producto) {
@@ -34,7 +61,7 @@ function DetalleProducto({ productos, onAgregar, cargando }) {
     <ProductDetail
       producto={producto}
       onAgregar={onAgregar}
-      onVolver={() => window.history.back()}
+      onVolver={() => navigate("/productos")}
     />
   );
 }
@@ -94,6 +121,26 @@ function App() {
     setProductos((actuales) => [...actuales, nuevo]);
   }
 
+  function actualizarProductos(productoGuardado) {
+  setProductos((actuales) => {
+    const existe = actuales.some(
+      (producto) => producto._id === productoGuardado._id
+    );
+
+    if (existe) {
+      // Si ya existía, reemplazamos sus datos.
+      return actuales.map((producto) =>
+        producto._id === productoGuardado._id
+          ? productoGuardado
+          : producto
+      );
+    }
+
+    // Si es nuevo, lo agregamos al catálogo.
+    return [...actuales, productoGuardado];
+  });
+}
+
   return (
     <>
       <Navbar cantidad={carrito.length} />
@@ -134,14 +181,10 @@ function App() {
           />
 
           <Route
-            path="/productos/:id"
-            element={
-              <DetalleProducto
-                productos={productos}
-                cargando={cargando}
-                onAgregar={agregarAlCarrito}
-              />
-            }
+          path="/productos/:id"
+          element={
+          <DetalleProducto onAgregar={agregarAlCarrito} />
+          }
           />
 
           <Route
@@ -150,15 +193,13 @@ function App() {
           />
 
           <Route
-            path="/admin/crear-producto"
-            element={
-              <NuevoProductoForm
-                onCreado={(nuevo) => {
-                  sumarProducto(nuevo);
-                  navigate("/productos");
-                }}
-              />
-            }
+          path="/admin/crear-producto"
+          element={<ProductoForm onGuardado={actualizarProductos} />}
+          />
+
+          <Route
+          path="/admin/editar-producto/:id"
+          element={<ProductoForm onGuardado={actualizarProductos} />}
           />
 
           <Route

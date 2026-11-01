@@ -8,11 +8,22 @@ function ProductCard({ producto, onAgregar, onVerDetalle }) {
   return (
     <article className="producto">
       <img
-      src={producto.imagenUrl || producto.imagen || "/img/sin-imagen.png"}
+      src={
+      producto.imagenUrl ||
+      producto.imagen ||
+      "/img/escritorioCosta.png"
+      }
       alt={producto.nombre}
       onError={(event) => {
-      event.currentTarget.onerror = null;
-      event.currentTarget.src = "/img/sin-imagen.png";
+      const imagen = event.currentTarget;
+
+      if (imagen.dataset.fallback === "true") {
+      imagen.style.display = "none";
+      return;
+      }
+
+      imagen.dataset.fallback = "true";
+      imagen.src = "/img/escritorioCosta.png";
       }}
       />
 
