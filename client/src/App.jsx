@@ -21,42 +21,29 @@ function DetalleProducto({ onAgregar, onEliminar }) {
   const [cargandoDetalle, setCargandoDetalle] = useState(true);
   const [errorDetalle, setErrorDetalle] = useState(null);
 
-  
   useEffect(() => {
-  async function cargarProductos() {
-    try {
-      console.log("URL de la API:", API_URL);
+    async function cargarProducto() {
+      try {
+        setCargandoDetalle(true);
+        setErrorDetalle(null);
 
-      const respuesta = await fetch(API_URL);
+        const respuesta = await fetch(`${API_URL}/${id}`);
+        const datos = await respuesta.json();
 
-      console.log("Estado de respuesta:", respuesta.status);
+        if (!respuesta.ok) {
+          throw new Error(datos.error || "No se pudo cargar el producto");
+        }
 
-      const datos = await respuesta.json();
-
-      console.log("Productos recibidos:", datos);
-
-      if (!respuesta.ok) {
-        throw new Error("El servidor respondió: " + respuesta.status);
+        setProducto(datos);
+      } catch (error) {
+        setErrorDetalle(error.message);
+      } finally {
+        setCargandoDetalle(false);
       }
-
-      if (!Array.isArray(datos)) {
-        throw new Error("La API no devolvió un array de productos");
-      }
-
-      setProductos(datos);
-
-    } catch (err) {
-      console.error("Error al cargar productos:", err);
-      setError(err.message);
-
-    } finally {
-      setCargando(false);
     }
-  }
 
-  cargarProductos();
-}, []);
-
+    cargarProducto();
+  }, [id]);
 
   if (cargandoDetalle) {
     return <p>Cargando producto...</p>;

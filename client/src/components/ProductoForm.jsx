@@ -15,6 +15,32 @@ const VACIO = {
   info: "",
 };
 
+function obtenerMensajeError(error) {
+  const mensaje = error.message?.toLowerCase() || "";
+
+  if (mensaje.includes("nombre")) {
+    return "Por favor, ingresá el nombre del producto.";
+  }
+
+  if (mensaje.includes("precio")) {
+    return "Ingresá un precio válido para el producto.";
+  }
+
+  if (mensaje.includes("stock")) {
+    return "Ingresá una cantidad de stock válida.";
+  }
+
+  if (mensaje.includes("required")) {
+    return "Completá todos los campos obligatorios.";
+  }
+
+  if (mensaje.includes("cast to number")) {
+    return "Revisá los campos numéricos. Deben contener números válidos.";
+  }
+
+  return "No pudimos guardar el producto. Revisá los datos e intentá nuevamente.";
+}
+
 export default function ProductoForm({ onGuardado }) {
   const { id } = useParams();
   const esEdicion = Boolean(id);
@@ -53,7 +79,7 @@ export default function ProductoForm({ onGuardado }) {
           info: datos.info ?? "",
         });
       } catch (err) {
-        setError(err.message);
+        setError(obtenerMensajeError(err));
       } finally {
         setCargando(false);
       }
@@ -109,7 +135,7 @@ export default function ProductoForm({ onGuardado }) {
       navigate(`/productos/${productoGuardado._id}`);
 
     } catch (err) {
-      setError(err.message);
+      setError(obtenerMensajeError(err));
     } finally {
       setGuardando(false);
     }
