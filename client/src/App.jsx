@@ -10,7 +10,7 @@ import ProductoForm from "./components/ProductoForm";
 
 import Catalogo from "./pages/Catalogo";
 
-const API = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, "")}/api/productos`
   : "/api/productos";
 
@@ -24,30 +24,29 @@ function DetalleProducto({ onAgregar, onEliminar }) {
 
   console.log("API configurada en App:", API_URL);
 
-  
-  useEffect(() => {
-    async function cargarProducto() {
-      try {
-        setCargandoDetalle(true);
-        setErrorDetalle(null);
 
-        const respuesta = await fetch(`${API_URL}/${id}`);
-        const datos = await respuesta.json();
+  useEffect(() => {
+    async function cargarProductos() {
+      try {
+        const respuesta = await fetch(API_URL);
 
         if (!respuesta.ok) {
-          throw new Error(datos.error || "No se pudo cargar el producto");
+          throw new Error("El servidor respondió: " + respuesta.status);
         }
 
-        setProducto(datos);
-      } catch (error) {
-        setErrorDetalle(error.message);
+        const datos = await respuesta.json();
+        setProductos(datos);
+
+      } catch (err) {
+        setError(err.message);
+
       } finally {
-        setCargandoDetalle(false);
+        setCargando(false);
       }
     }
 
-    cargarProducto();
-  }, [id]);
+    cargarProductos();
+  }, []);
 
   if (cargandoDetalle) {
     return <p>Cargando producto...</p>;

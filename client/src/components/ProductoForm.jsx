@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const API = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, "")}/api/productos`
   : "/api/productos";
 
@@ -37,7 +37,7 @@ function obtenerMensajeError(error) {
   }
 
   if (mensaje.includes("cast to number")) {
-    return "Revisá los campos numéricos. Deben contener números válidos.";
+    return "Revisá los campos numéricos.";
   }
 
   return "No pudimos guardar el producto. Revisá los datos e intentá nuevamente.";
@@ -62,7 +62,7 @@ export default function ProductoForm({ onGuardado }) {
 
     async function cargarProducto() {
       try {
-        const respuesta = await fetch(`${API}/${id}`);
+        const respuesta = await fetch(`${API_URL}/${id}`);
         const datos = await respuesta.json();
 
         if (!respuesta.ok) {
@@ -80,6 +80,7 @@ export default function ProductoForm({ onGuardado }) {
           acabado: datos.acabado ?? "",
           info: datos.info ?? "",
         });
+
       } catch (err) {
         setError(obtenerMensajeError(err));
       } finally {
@@ -99,11 +100,6 @@ export default function ProductoForm({ onGuardado }) {
     }));
   }
 
-
-  console.log("API configurada:", API);
-  console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
-
-  
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
@@ -118,7 +114,7 @@ export default function ProductoForm({ onGuardado }) {
       setGuardando(true);
 
       const respuesta = await fetch(
-        esEdicion ? `${API}/${id}` : API,
+        esEdicion ? `${API_URL}/${id}` : API_URL,
         {
           method: esEdicion ? "PUT" : "POST",
           headers: {
@@ -128,21 +124,29 @@ export default function ProductoForm({ onGuardado }) {
         }
       );
 
-      const datos = await respuesta.json();
+      const texto = await respuesta.text();
+      const datos = texto ? JSON.parse(texto) : {};
 
       if (!respuesta.ok) {
-        throw new Error(datos.error || "No se pudo guardar el producto");
+        throw new Error(
+          datos.error || "No se pudo guardar el producto"
+        );
       }
 
       const productoGuardado = esEdicion
-      ? datos.producto
-      : datos.productoGuardado;
+        ? datos.producto
+        : datos.productoGuardado;
+
+      if (!productoGuardado) {
+        throw new Error("El servidor no devolvió el producto guardado.");
+      }
 
       onGuardado(productoGuardado);
       navigate(`/productos/${productoGuardado._id}`);
 
     } catch (err) {
       setError(obtenerMensajeError(err));
+      console.error("Error al guardar producto:", err);
     } finally {
       setGuardando(false);
     }
@@ -262,7 +266,12 @@ export default function ProductoForm({ onGuardado }) {
           />
         </div>
 
-        {error && <p role="alert">{error}</p>}
+        {error && (
+          <div className="mensaje-error" role="alert">
+            <strong>¡Ups! Algo salió mal.</strong>
+            <p>{error}</p>
+          </div>
+        )}
 
         <button
           className="formulario-producto__boton"
