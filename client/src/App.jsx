@@ -21,6 +21,10 @@ function DetalleProducto({ onAgregar, onEliminar }) {
   const [cargandoDetalle, setCargandoDetalle] = useState(true);
   const [errorDetalle, setErrorDetalle] = useState(null);
 
+
+  console.log("API configurada en App:", API_URL);
+
+  
   useEffect(() => {
     async function cargarProducto() {
       try {
