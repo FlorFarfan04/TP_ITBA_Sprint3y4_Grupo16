@@ -16,8 +16,8 @@ Permite visualizar un catálogo de productos, consultar el detalle de cada uno, 
 
 El proyecto tiene dos partes independientes que se comunican mediante una API REST:
 
-- client/ → Frontend (React + Vite).
-- server/ → Backend (Node.js, Express, Mongoose, MongoDB Atlas).
+- `client/` → Frontend (React + Vite).
+- `server/` → Backend (Node.js, Express, Mongoose, MongoDB Atlas).
 
 ## Despliegues  
 
@@ -43,7 +43,7 @@ Desarrollado con React, Vite y React Router DOM. Consume la API REST del backend
 
 ---
 
-## Backend  [BACKEND]
+## Backend
 
 Desarrollado con Node.js, Express y Mongoose. Los datos se guardan en **MongoDB Atlas** (base `muebleriaJotaDB`, colección `products`).
 
@@ -78,7 +78,7 @@ Crear `server/.env` (no subirlo a GitHub; debe estar en `.gitignore`):
 | `PORT` | Opcional. En local usa 3000; Render lo asigna solo. |
 
 
-MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/muebleriaJotaDB?retryWrites=true&w=majority
+`MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/muebleriaJotaDB?retryWrites=true&w=majority`
 
 
 ---
@@ -89,17 +89,17 @@ Requisitos: Node.js 20.6 o superior y npm.
 
 ### Backend
 
-cd server
-npm install
+`cd server
+npm install`
 # crear server/.env con MONGO_URI
-npm run seed
-npm run dev # http://localhost:3000
+`npm run seed
+npm run dev # http://localhost:3000`
 
 ### Frontend
 
-cd client
+`**cd client
 npm install
-npm run dev  # http://localhost:5173 (o en el puerto que indique React/Vite)
+npm run dev  # http://localhost:5173 (o en el puerto que indique React/Vite)`
 
 Ambos deben estar corriendo a la vez: el proxy de Vite envía las llamadas `/api` al backend en el puerto 3000.
 
