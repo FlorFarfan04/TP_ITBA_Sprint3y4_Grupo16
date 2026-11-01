@@ -10,7 +10,9 @@ import ProductoForm from "./components/ProductoForm";
 
 import Catalogo from "./pages/Catalogo";
 
-const API_URL = "/api/productos";
+const API_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api/productos`
+  : "/api/productos";
 
 function DetalleProducto({ onAgregar, onEliminar }) {
   const { id } = useParams();
