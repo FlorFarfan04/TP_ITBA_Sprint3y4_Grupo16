@@ -12,8 +12,9 @@ const productSchema = new mongoose.Schema(
     acabado: { type: String, trim: true },
     descripcion: { type: String, trim: true },
     info: { type: String, trim: true },
-   precio: { type: Number, required: true, min: [0, 'El precio no puede ser negativo'],
+    precio: { type: Number, required: true, min: [0, 'El precio no puede ser negativo'],
 },
+    categoria: { type: mongoose.Schema.Types.ObjectId, ref: "Categoria" },
   },
   { timestamps: true }
 );

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import conectarDB from "./db.js";
 import productosRouter from "./routes/productos.routes.js";
+import categoriasRouter from "./routes/categorias.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/productos", productosRouter);
+app.use("/api/categorias", categoriasRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`Ruta no encontrada: ${req.method} ${req.originalUrl}`);
@@ -23,10 +25,24 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  const statusCode = err.status || 500;
-  const message = statusCode === 500 ? "Error interno del servidor" : err.message;
+  let statusCode = err.status || 500;
+  let message = err.message;
 
-  if (statusCode === 500) console.error(err);
+  if (err.name === "ValidationError") {
+    statusCode = 400;
+    message = Object.values(err.errors).map((e) => e.message).join(", ") || "Datos inválidos";
+  } else if (err.name === "CastError") {
+    statusCode = 400;
+    message = "El id no es válido";
+  } else if (err.code === 11000) {
+    statusCode = 409;
+    message = "Ya existe un recurso con esos datos";
+  }
+
+  if (statusCode === 500) {
+    console.error(err);
+    message = "Error interno del servidor";
+  }
 
   res.status(statusCode).json({ error: message });
 });

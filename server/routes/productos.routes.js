@@ -1,8 +1,29 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
+import Categoria from "../models/Categoria.js";
 
 const productosRouter = Router();
+
+async function validarCategoriaSiViene(categoria, next) {
+  if (categoria === undefined || categoria === null || categoria === "") {
+    return true;
+  }
+  if (!mongoose.isValidObjectId(categoria)) {
+    const error = new Error("El id no es válido");
+    error.status = 400;
+    next(error);
+    return false;
+  }
+  const existe = await Categoria.findById(categoria);
+  if (!existe) {
+    const error = new Error("La categoría no existe");
+    error.status = 400;
+    next(error);
+    return false;
+  }
+  return true;
+}
 
 productosRouter.param("id", (req, res, next, id) => {
   if (!mongoose.isValidObjectId(id)) {
@@ -16,7 +37,16 @@ productosRouter.param("id", (req, res, next, id) => {
 
 productosRouter.get("/", async (req, res, next) => {
   try {
-    const productos = await Product.find();
+    const filtro = {};
+    if (req.query.categoria) {
+      if (!mongoose.isValidObjectId(req.query.categoria)) {
+        const error = new Error("El id no es válido");
+        error.status = 400;
+        return next(error);
+      }
+      filtro.categoria = req.query.categoria;
+    }
+    const productos = await Product.find(filtro).populate("categoria", "nombre");
     res.status(200).json(productos);
   } catch (error) {
     console.log('Error al obtener los productos:', error.message);
@@ -26,7 +56,7 @@ productosRouter.get("/", async (req, res, next) => {
 
 productosRouter.get("/:id", async (req, res, next) => {
   try {
-    const producto = await Product.findById(req.params.id);
+    const producto = await Product.findById(req.params.id).populate("categoria", "nombre");
     if (!producto) {
       const error = new Error("Producto no encontrado");
       error.status = 404;
@@ -43,9 +73,15 @@ productosRouter.get("/:id", async (req, res, next) => {
 
 productosRouter.post("/", async (req, res, next) => {
   try {
+    if (!(await validarCategoriaSiViene(req.body.categoria, next))) return;
     const nuevoProducto = new Product(req.body);
     const productoGuardado = await nuevoProducto.save();
-    res.status(201).json({ mensaje: 'Producto creado correctamente', productoGuardado });
+    const datos = productoGuardado.toObject();
+    res.status(201).json({
+      ...datos,
+      mensaje: "Producto creado correctamente",
+      productoGuardado: datos,
+    });
   } catch (error) {
     console.log('Error al crear el producto:', error.message);
     error.status = 400;
@@ -56,6 +92,7 @@ productosRouter.post("/", async (req, res, next) => {
 
 productosRouter.put("/:id", async (req, res, next) => {
   try {
+    if (!(await validarCategoriaSiViene(req.body.categoria, next))) return;
     const producto = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
