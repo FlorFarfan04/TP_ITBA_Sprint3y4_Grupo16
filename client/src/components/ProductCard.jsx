@@ -5,26 +5,30 @@ function ProductCard({ producto, onAgregar, onVerDetalle }) {
     maximumFractionDigits: 0,
   }).format(producto.precio);
 
+  const imagenProducto = producto.imagenUrl || producto.imagen;
+
+  const rutaImagen = !imagenProducto
+    ? "/img/escritorioCosta.png"
+    : imagenProducto.startsWith("http") || imagenProducto.startsWith("/")
+      ? imagenProducto
+      : `/${imagenProducto}`;
+
   return (
     <article className="producto">
       <img
-      src={
-      producto.imagenUrl ||
-      producto.imagen ||
-      "/img/escritorioCosta.png"
-      }
-      alt={producto.nombre}
-      onError={(event) => {
-      const imagen = event.currentTarget;
+        src={rutaImagen}
+        alt={producto.nombre}
+        onError={(event) => {
+          const imagen = event.currentTarget;
 
-      if (imagen.dataset.fallback === "true") {
-      imagen.style.display = "none";
-      return;
-      }
+          if (imagen.dataset.fallback === "true") {
+            imagen.style.display = "none";
+            return;
+          }
 
-      imagen.dataset.fallback = "true";
-      imagen.src = "/img/escritorioCosta.png";
-      }}
+          imagen.dataset.fallback = "true";
+          imagen.src = "/img/escritorioCosta.png";
+        }}
       />
 
       <h3>{producto.nombre}</h3>

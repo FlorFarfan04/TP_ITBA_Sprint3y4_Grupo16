@@ -7,14 +7,17 @@ import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import ContactForm from "./components/ContactForm";
 import ProductoForm from "./components/ProductoForm";
-
 import Catalogo from "./pages/Catalogo";
 
-const API_URL = "/api/productos";
+const API_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, "")}/api/productos`
+  : "/api/productos";
 
+// Componente para mostrar el detalle de un producto
 function DetalleProducto({ onAgregar, onEliminar }) {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [producto, setProducto] = useState(null);
   const [cargandoDetalle, setCargandoDetalle] = useState(true);
   const [errorDetalle, setErrorDetalle] = useState(null);
@@ -33,8 +36,10 @@ function DetalleProducto({ onAgregar, onEliminar }) {
         }
 
         setProducto(datos);
+
       } catch (error) {
         setErrorDetalle(error.message);
+
       } finally {
         setCargandoDetalle(false);
       }
@@ -57,16 +62,16 @@ function DetalleProducto({ onAgregar, onEliminar }) {
 
   return (
     <ProductDetail
-    producto={producto}
-    onAgregar={onAgregar}
-    onEliminar={onEliminar}
-    onVolver={() => navigate("/productos")}
+      producto={producto}
+      onAgregar={onAgregar}
+      onEliminar={onEliminar}
+      onVolver={() => navigate("/productos")}
     />
   );
 }
 
+// Componente principal de la aplicación
 function App() {
-
   const navigate = useNavigate();
 
   const [carrito, setCarrito] = useState([]);
@@ -74,10 +79,9 @@ function App() {
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(true);
 
+  // Cargar todos los productos desde la API
   useEffect(() => {
-
     async function cargarProductos() {
-
       try {
         const respuesta = await fetch(API_URL);
 
@@ -97,7 +101,6 @@ function App() {
     }
 
     cargarProductos();
-
   }, []);
 
   function agregarAlCarrito(producto) {
@@ -105,7 +108,6 @@ function App() {
   }
 
   function irA(nuevaVista) {
-
     const rutas = {
       inicio: "/",
       productos: "/productos",
@@ -116,57 +118,51 @@ function App() {
     window.scrollTo(0, 0);
   }
 
-  function sumarProducto(nuevo) {
-    setProductos((actuales) => [...actuales, nuevo]);
-  }
-
   function actualizarProductos(productoGuardado) {
-  setProductos((actuales) => {
-    const existe = actuales.some(
-      (producto) => producto._id === productoGuardado._id
-    );
-
-    if (existe) {
-      // Si ya existía, reemplazamos sus datos.
-      return actuales.map((producto) =>
-        producto._id === productoGuardado._id
-          ? productoGuardado
-          : producto
+    setProductos((actuales) => {
+      const existe = actuales.some(
+        (producto) => producto._id === productoGuardado._id
       );
-    }
 
-    return [...actuales, productoGuardado];
-  });
-}
+      if (existe) {
+        return actuales.map((producto) =>
+          producto._id === productoGuardado._id
+            ? productoGuardado
+            : producto
+        );
+      }
 
-async function eliminarProducto(id) {
-  try {
-    const respuesta = await fetch(`${API_URL}/${id}`, {
-      method: "DELETE",
+      return [...actuales, productoGuardado];
     });
-
-    if (!respuesta.ok) {
-      throw new Error("No se pudo eliminar el producto");
-    }
-
-    setProductos((actuales) =>
-      actuales.filter((producto) => producto._id !== id)
-    );
-
-    navigate("/productos");
-
-  } catch (error) {
-    console.error("Error al eliminar:", error);
-    alert("Ocurrió un error al eliminar el producto.");
   }
-}
+
+  async function eliminarProducto(id) {
+    try {
+      const respuesta = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!respuesta.ok) {
+        throw new Error("No se pudo eliminar el producto");
+      }
+
+      setProductos((actuales) =>
+        actuales.filter((producto) => producto._id !== id)
+      );
+
+      navigate("/productos");
+
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      alert("Ocurrió un error al eliminar el producto.");
+    }
+  }
 
   return (
     <>
       <Navbar cantidad={carrito.length} />
 
       <main>
-
         <Routes>
 
           <Route
@@ -204,8 +200,8 @@ async function eliminarProducto(id) {
             path="/productos/:id"
             element={
               <DetalleProducto
-              onAgregar={agregarAlCarrito}
-              onEliminar={eliminarProducto}
+                onAgregar={agregarAlCarrito}
+                onEliminar={eliminarProducto}
               />
             }
           />
@@ -216,13 +212,17 @@ async function eliminarProducto(id) {
           />
 
           <Route
-          path="/admin/crear-producto"
-          element={<ProductoForm onGuardado={actualizarProductos} />}
+            path="/admin/crear-producto"
+            element={
+              <ProductoForm onGuardado={actualizarProductos} />
+            }
           />
 
           <Route
-          path="/admin/editar-producto/:id"
-          element={<ProductoForm onGuardado={actualizarProductos} />}
+            path="/admin/editar-producto/:id"
+            element={
+              <ProductoForm onGuardado={actualizarProductos} />
+            }
           />
 
           <Route
@@ -231,7 +231,6 @@ async function eliminarProducto(id) {
           />
 
         </Routes>
-
       </main>
 
       <Footer />
@@ -240,5 +239,3 @@ async function eliminarProducto(id) {
 }
 
 export default App;
-
-
