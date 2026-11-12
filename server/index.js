@@ -3,6 +3,7 @@ import cors from "cors";
 import conectarDB from "./db.js";
 import productosRouter from "./routes/productos.routes.js";
 import categoriasRouter from "./routes/categorias.js";
+import usuariosRouter from "./routes/usuarios.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use((req, res, next) => {
 
 app.use("/api/productos", productosRouter);
 app.use("/api/categorias", categoriasRouter);
+app.use("/api/usuarios", usuariosRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`Ruta no encontrada: ${req.method} ${req.originalUrl}`);

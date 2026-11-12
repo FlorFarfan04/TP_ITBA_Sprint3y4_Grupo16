@@ -7,9 +7,11 @@
     "start": "node index.js",
     "dev": "node --env-file=.env --watch index.js",
     "seed": "node --env-file=.env seed.js",
-    "test": "node --test tests/contrato.test.js"
+    "test": "node --test tests/contrato.test.js",
+    "test:auth": "node --test tests/auth.test.cjs"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^18.0.9",
     "express": "^5.2.1",
