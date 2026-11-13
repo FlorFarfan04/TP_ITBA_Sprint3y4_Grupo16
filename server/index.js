@@ -46,7 +46,10 @@ app.use((err, req, res, next) => {
     message = "Error interno del servidor";
   }
 
-  res.status(statusCode).json({ error: message });
+  const cuerpo = req.originalUrl.startsWith("/api/usuarios")
+    ? { mensaje: message }
+    : { error: message };
+  res.status(statusCode).json(cuerpo);
 });
 
 conectarDB().then(() => {

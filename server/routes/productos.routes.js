@@ -2,6 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
 import Categoria from "../models/Categoria.js";
+import { verificarToken, soloAdmin } from "../middleware/auth.js";
 
 const productosRouter = Router();
 
@@ -71,7 +72,7 @@ productosRouter.get("/:id", async (req, res, next) => {
 });
 
 
-productosRouter.post("/", async (req, res, next) => {
+productosRouter.post("/", verificarToken, soloAdmin, async (req, res, next) => {
   try {
     if (!(await validarCategoriaSiViene(req.body.categoria, next))) return;
     const nuevoProducto = new Product(req.body);
@@ -90,7 +91,7 @@ productosRouter.post("/", async (req, res, next) => {
 });
 
 
-productosRouter.put("/:id", async (req, res, next) => {
+productosRouter.put("/:id", verificarToken, soloAdmin, async (req, res, next) => {
   try {
     if (!(await validarCategoriaSiViene(req.body.categoria, next))) return;
     const producto = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -111,7 +112,7 @@ productosRouter.put("/:id", async (req, res, next) => {
 });
 
 
-productosRouter.delete("/:id", async (req, res, next) => {
+productosRouter.delete("/:id", verificarToken, soloAdmin, async (req, res, next) => {
   try {
     const producto = await Product.findByIdAndDelete(req.params.id);
     if (!producto) {
