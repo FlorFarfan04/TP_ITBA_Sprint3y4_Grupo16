@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-const API_URL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, "")}/api/productos`
-  : "/api/productos";
+import { API_URL } from "../api";
 
 const VACIO = {
   nombre: "",
@@ -62,7 +59,7 @@ export default function ProductoForm({ onGuardado }) {
 
     async function cargarProducto() {
       try {
-        const respuesta = await fetch(`${API_URL}/${id}`);
+        const respuesta = await fetch(`${API_URL}/productos/${id}`);
         const datos = await respuesta.json();
 
         if (!respuesta.ok) {
@@ -114,7 +111,7 @@ export default function ProductoForm({ onGuardado }) {
       setGuardando(true);
 
       const respuesta = await fetch(
-        esEdicion ? `${API_URL}/${id}` : API_URL,
+        esEdicion ? `${API_URL}/productos/${id}` : `${API_URL}/productos`,
         {
           method: esEdicion ? "PUT" : "POST",
           headers: {

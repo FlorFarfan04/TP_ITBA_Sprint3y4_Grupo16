@@ -8,10 +8,7 @@ import ProductDetail from "./pages/ProductDetail";
 import ContactForm from "./components/ContactForm";
 import ProductoForm from "./components/ProductoForm";
 import Catalogo from "./pages/Catalogo";
-
-const API_URL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, "")}/api/productos`
-  : "/api/productos";
+import { API_URL } from "./api";
 
 // Componente para mostrar el detalle de un producto
 function DetalleProducto({ onAgregar, onEliminar }) {
@@ -28,7 +25,7 @@ function DetalleProducto({ onAgregar, onEliminar }) {
         setCargandoDetalle(true);
         setErrorDetalle(null);
 
-        const respuesta = await fetch(`${API_URL}/${id}`);
+        const respuesta = await fetch(`${API_URL}/productos/${id}`);
         const datos = await respuesta.json();
 
         if (!respuesta.ok) {
@@ -83,7 +80,7 @@ function App() {
   useEffect(() => {
     async function cargarProductos() {
       try {
-        const respuesta = await fetch(API_URL);
+        const respuesta = await fetch(`${API_URL}/productos`);
 
         if (!respuesta.ok) {
           throw new Error("El servidor respondió: " + respuesta.status);
@@ -138,7 +135,7 @@ function App() {
 
   async function eliminarProducto(id) {
     try {
-      const respuesta = await fetch(`${API_URL}/${id}`, {
+      const respuesta = await fetch(`${API_URL}/productos/${id}`, {
         method: "DELETE",
       });
 
