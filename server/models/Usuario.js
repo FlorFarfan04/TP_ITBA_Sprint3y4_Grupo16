@@ -13,6 +13,7 @@ const usuarioSchema = new mongoose.Schema(
 
 usuarioSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
+  if (/^\$2[aby]\$/.test(this.password)) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 

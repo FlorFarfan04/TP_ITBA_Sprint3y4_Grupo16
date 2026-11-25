@@ -9,6 +9,7 @@ import ContactForm from "./components/ContactForm";
 import ProductoForm from "./components/ProductoForm";
 import Catalogo from "./pages/Catalogo";
 import { API_URL } from "./api";
+import Login from "./pages/Login";
 
 // Componente para mostrar el detalle de un producto
 function DetalleProducto({ onAgregar, onEliminar }) {
@@ -220,6 +221,11 @@ function App() {
             element={
               <ProductoForm onGuardado={actualizarProductos} />
             }
+          />
+
+          <Route
+            path="/login"
+            element={<Login />}
           />
 
           <Route

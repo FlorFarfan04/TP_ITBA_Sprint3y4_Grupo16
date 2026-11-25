@@ -1,14 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Navbar({ cantidad }) {
-
   const location = useLocation();
+  const { usuario, logout } = useAuth();
 
   const enlaces = [
     { ruta: "/", texto: "Inicio" },
     { ruta: "/productos", texto: "Productos" },
     { ruta: "/contacto", texto: "Contacto" },
-    { ruta: "/admin/crear-producto", texto: "Nuevo producto" }
   ];
 
   return (
@@ -20,7 +20,11 @@ function Navbar({ cantidad }) {
           Hermanos <span>Jota</span>
         </Link>
 
-        <input className="nav__checkbox" type="checkbox" id="menu-toggle" />
+        <input
+          className="nav__checkbox"
+          type="checkbox"
+          id="menu-toggle"
+        />
 
         <label className="nav__toggle" htmlFor="menu-toggle">
           <span aria-hidden="true">☰</span>
@@ -39,11 +43,37 @@ function Navbar({ cantidad }) {
               </Link>
             </li>
           ))}
+
+          {usuario?.rol === "admin" && (
+            <li>
+              <Link to="/admin/crear-producto">
+                Nuevo producto
+              </Link>
+            </li>
+          )}
         </ul>
 
         <span className="boton-carrito">
           Carrito (<span id="contador-carrito">{cantidad}</span>)
         </span>
+
+        <div className="nav__usuario">
+          {usuario ? (
+            <>
+              <span>Hola, {usuario.nombre}</span>
+              <button
+                className="boton-logout"
+                onClick={logout}
+              >
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <Link to="/login">
+              Ingresar
+            </Link>
+          )}
+        </div>
 
       </div>
     </header>

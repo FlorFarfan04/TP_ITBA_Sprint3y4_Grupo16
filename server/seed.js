@@ -2,9 +2,25 @@ import mongoose from "mongoose";
 import conectarDB from "./db.js";
 import Product from "./models/Product.js";
 import Categoria from "./models/Categoria.js";
+import Usuario from "./models/Usuario.js";
 import productos from "./data/productos.js";
 
 const NOMBRES_CATEGORIAS = ["Sillas", "Mesas", "Sillones", "Guardado"];
+
+const USUARIOS_PRUEBA = [
+  {
+    nombre: "Admin Jota",
+    email: "admin@jota.com",
+    password: "admin123",
+    rol: "admin",
+  },
+  {
+    nombre: "Cliente Demo",
+    email: "cliente@jota.com",
+    password: "cliente123",
+    rol: "cliente",
+  },
+];
 
 const categoriaPorProducto = {
   "Aparador Uspallata": "Guardado",
@@ -69,6 +85,24 @@ async function seed() {
     );
 
     console.log("Categorías asignadas a los productos del catálogo.");
+
+    for (const datos of USUARIOS_PRUEBA) {
+      const existente = await Usuario.findOne({ email: datos.email });
+
+      if (existente) {
+        console.log(`El usuario ${datos.email} ya existe. No se modifica.`);
+        continue;
+      }
+
+      await Usuario.create({
+        nombre: datos.nombre,
+        email: datos.email,
+        password: datos.password,
+        rol: datos.rol,
+      });
+
+      console.log(`Usuario creado: ${datos.email}`);
+    }
   } finally {
     await mongoose.disconnect();
   }

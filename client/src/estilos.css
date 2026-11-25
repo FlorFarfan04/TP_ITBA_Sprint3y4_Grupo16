@@ -61,7 +61,6 @@ p {
 .nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
   padding: 0.85rem 1rem;
@@ -69,7 +68,6 @@ p {
 
 .nav__marca {
   display: flex;
-  align-items: center;
   gap: 0.6rem;
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
@@ -105,7 +103,8 @@ p {
 }
 
 .nav__menu {
-  display: none;
+  display: flex;
+  margin-left: auto;
   flex-direction: column;
   width: 100%;
   gap: 0.5rem;
@@ -135,6 +134,16 @@ p {
   font-size: 0.9rem;
   font-weight: 500;
   color: #f5e6d3;
+}
+
+.boton-logout {
+  background-color: #87a96b;
+  border: 1px solid #87a96b;
+  color: #fffdf9;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 .hero {
@@ -779,4 +788,9 @@ p.estado-carga {
   .formulario-producto {
     padding: 1.25rem;
   }
+}
+
+
+.formulario-login {
+  
 }
