@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function ProductDetail({ producto, onAgregar, onVolver, onEliminar }) {
   const [agregado, setAgregado] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
   const navigate = useNavigate();
+  const { usuario } = useAuth();
+  const esAdmin = usuario?.rol === "admin";
 
-  // Los productos originales usan "imagen".
-  // Los nuevos usan "imagenUrl".
+  // Los productos originales usan "imagen"
+  // Los nuevos usan "imagenUrl"
   const imagenProducto =
     producto.imagenUrl || producto.imagen || "/img/escritorioCosta.png";
 
@@ -117,12 +120,12 @@ function ProductDetail({ producto, onAgregar, onVolver, onEliminar }) {
                 : "Añadir al carrito"}
             </button>
 
-            <button
+            {esAdmin && <button
             className="boton boton--salvia"
             onClick={() => navigate(`/admin/editar-producto/${producto._id}`)}
             >
               Editar producto
-              </button>
+              </button>}
 
             <button
               className="boton boton--salvia"
@@ -131,7 +134,7 @@ function ProductDetail({ producto, onAgregar, onVolver, onEliminar }) {
               Volver al catálogo
             </button>
 
-            {confirmando ? (
+            {esAdmin && (confirmando ? (
             <div>
               <p>
               ¿Eliminar "{producto.nombre}"? Esta acción no se puede deshacer.
@@ -149,7 +152,7 @@ function ProductDetail({ producto, onAgregar, onVolver, onEliminar }) {
             <button className="boton boton--eliminar" onClick={() => setConfirmando(true)}>
             Eliminar producto
             </button>
-            )}
+            ))}
             
           </div>
 

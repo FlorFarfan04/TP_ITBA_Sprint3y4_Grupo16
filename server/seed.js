@@ -112,3 +112,4 @@ seed().catch((error) => {
   console.error("Falló el seed:", error);
   process.exitCode = 1;
 });
+                                                                                                                                                                                           

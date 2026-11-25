@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../api";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const VACIO = {
   nombre: "",
@@ -44,6 +45,7 @@ export default function ProductoForm({ onGuardado }) {
   const { id } = useParams();
   const esEdicion = Boolean(id);
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   const [form, setForm] = useState(VACIO);
   const [error, setError] = useState(null);
@@ -116,6 +118,7 @@ export default function ProductoForm({ onGuardado }) {
           method: esEdicion ? "PUT" : "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(producto),
         }
@@ -156,35 +159,37 @@ export default function ProductoForm({ onGuardado }) {
   return (
     <section className="seccion--admin">
       <form
-        className="formulario-producto"
+        className="formulario"
         onSubmit={handleSubmit}
       >
-        <h1 className="formulario-producto__titulo">
+        <h1 className="formulario__titulo">
           {esEdicion ? "Editar producto" : "Nuevo producto"}
         </h1>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="nombre">Nombre *</label>
           <input
             id="nombre"
             name="nombre"
+            placeholder="Ej. Mesa de comedor Pampa"
             value={form.nombre}
             onChange={handleChange}
             required
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="descripcion">Descripción</label>
           <textarea
             id="descripcion"
             name="descripcion"
+            placeholder="Describí el producto"
             value={form.descripcion}
             onChange={handleChange}
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="precio">Precio *</label>
           <input
             id="precio"
@@ -192,13 +197,14 @@ export default function ProductoForm({ onGuardado }) {
             type="number"
             min="0"
             step="0.01"
+            placeholder="Ej. 150000"
             value={form.precio}
             onChange={handleChange}
             required
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="stock">Stock</label>
           <input
             id="stock"
@@ -206,58 +212,62 @@ export default function ProductoForm({ onGuardado }) {
             type="number"
             min="0"
             step="1"
+            placeholder="Ej. 5"
             value={form.stock}
             onChange={handleChange}
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="imagenUrl">URL de imagen</label>
           <input
             id="imagenUrl"
             name="imagenUrl"
             value={form.imagenUrl}
             onChange={handleChange}
-            placeholder="/img/escritorioCosta.png"
+            placeholder="/img/nombre-del-producto.png"
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="medidas">Medidas</label>
           <input
             id="medidas"
             name="medidas"
             value={form.medidas}
             onChange={handleChange}
-            placeholder="20 cm x 30 cm x 20 cm"
+            placeholder="Ej. 120 × 80 × 75 cm"
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="materiales">Materiales</label>
           <input
             id="materiales"
             name="materiales"
+            placeholder="Ej. Madera maciza"
             value={form.materiales}
             onChange={handleChange}
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="acabado">Acabado</label>
           <input
             id="acabado"
             name="acabado"
+            placeholder="Ej. Laca natural"
             value={form.acabado}
             onChange={handleChange}
           />
         </div>
 
-        <div className="formulario-producto__campo">
+        <div className="formulario__campo">
           <label htmlFor="info">Información adicional</label>
           <textarea
             id="info"
             name="info"
+            placeholder="Detalles adicionales (opcional)"
             value={form.info}
             onChange={handleChange}
           />
@@ -271,7 +281,7 @@ export default function ProductoForm({ onGuardado }) {
         )}
 
         <button
-          className="formulario-producto__boton"
+          className="formulario__boton"
           type="submit"
           disabled={guardando}
         >

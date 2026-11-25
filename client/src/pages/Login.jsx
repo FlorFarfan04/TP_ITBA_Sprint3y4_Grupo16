@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Login() {
@@ -22,13 +22,20 @@ export default function Login() {
   }
 
   return (
-    <section>
-      <h1>Ingresar</h1>
-      <form onSubmit={handleSubmit} className="formulario-login">
-        <label>Email <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></label>
-        <label>Contraseña <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></label>
+    <section className="seccion seccion--login">
+      <form onSubmit={handleSubmit} className="formulario">
+        <h1 className="formulario__titulo">Ingresar</h1>
+        <label className="formulario__campo">Email
+          <input type="email" placeholder="ejemplo@email.com" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </label>
+        <label className="formulario__campo">Contraseña
+          <input type="password" placeholder="Ingresá tu contraseña" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </label>
         {error && <p className="error">{error}</p>}
-        <button type="submit">Ingresar</button>
+        <button className="formulario__boton" type="submit">Ingresar</button>
+        <p className="formulario__enlace">
+          ¿No tenés cuenta? <Link to="/registro">Registrate</Link>
+        </p>
       </form>
     </section>
   );

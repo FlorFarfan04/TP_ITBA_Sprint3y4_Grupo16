@@ -10,8 +10,11 @@ import ProductoForm from "./components/ProductoForm";
 import Catalogo from "./pages/Catalogo";
 import { API_URL } from "./api";
 import Login from "./pages/Login";
+import Registro from "./pages/Registro.jsx";
+import Perfil from "./pages/Perfil.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
 
-// Componente para mostrar el detalle de un producto
 function DetalleProducto({ onAgregar, onEliminar }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -68,16 +71,15 @@ function DetalleProducto({ onAgregar, onEliminar }) {
   );
 }
 
-// Componente principal de la aplicación
 function App() {
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   const [carrito, setCarrito] = useState([]);
   const [productos, setProductos] = useState([]);
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(true);
 
-  // Cargar todos los productos desde la API
   useEffect(() => {
     async function cargarProductos() {
       try {
@@ -138,6 +140,9 @@ function App() {
     try {
       const respuesta = await fetch(`${API_URL}/productos/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!respuesta.ok) {
@@ -212,20 +217,38 @@ function App() {
           <Route
             path="/admin/crear-producto"
             element={
-              <ProductoForm onGuardado={actualizarProductos} />
+              <ProtectedRoute soloAdmin>
+                <ProductoForm key="crear" onGuardado={actualizarProductos} />
+              </ProtectedRoute>
             }
           />
 
           <Route
             path="/admin/editar-producto/:id"
             element={
-              <ProductoForm onGuardado={actualizarProductos} />
+              <ProtectedRoute soloAdmin>
+                <ProductoForm onGuardado={actualizarProductos} />
+              </ProtectedRoute>
             }
           />
 
           <Route
             path="/login"
             element={<Login />}
+          />
+
+          <Route
+            path="/registro"
+            element={<Registro />}
+          />
+
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute>
+                <Perfil />
+              </ProtectedRoute>
+            }
           />
 
           <Route

@@ -41,8 +41,8 @@ function ContactForm() {
       <div className="contacto" id="contacto">
         <h2 className="seccion__titulo">Contactanos</h2>
 
-        <form id="form-contacto" onSubmit={manejarEnvio} noValidate>
-          <div>
+        <form className="formulario" onSubmit={manejarEnvio} noValidate>
+          <div className="formulario__campo">
             <label htmlFor="nombre">Nombre:</label>
             <input
               type="text"
@@ -53,7 +53,7 @@ function ContactForm() {
               onChange={manejarCambio}
             />
           </div>
-          <div>
+          <div className="formulario__campo">
             <label htmlFor="email">Email:</label>
             <input
               type="email"
@@ -64,7 +64,7 @@ function ContactForm() {
               onChange={manejarCambio}
             />
           </div>
-          <div>
+          <div className="formulario__campo">
             <label htmlFor="mensaje">Mensaje:</label>
             <textarea
               id="mensaje"
@@ -76,7 +76,7 @@ function ContactForm() {
             ></textarea>
           </div>
 
-          <button type="submit">Enviar</button>
+          <button className="formulario__boton" type="submit">Enviar</button>
           <p id="mensaje-exito" className={respuesta.esError ? "error" : ""}>
             {respuesta.texto}
           </p>

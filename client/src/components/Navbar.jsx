@@ -46,7 +46,11 @@ function Navbar({ cantidad }) {
 
           {usuario?.rol === "admin" && (
             <li>
-              <Link to="/admin/crear-producto">
+              <Link to="/admin/crear-producto"
+              aria-current={
+                location.pathname === "/admin/crear-producto" ? "page" : undefined
+              }
+              >
                 Nuevo producto
               </Link>
             </li>
@@ -57,21 +61,27 @@ function Navbar({ cantidad }) {
           Carrito (<span id="contador-carrito">{cantidad}</span>)
         </span>
 
-        <div className="nav__usuario">
+        <div className="nav-usuario">
           {usuario ? (
             <>
-              <span>Hola, {usuario.nombre}</span>
+              <Link
+                to="/perfil"
+              >
+                Mi perfil
+              </Link>
+              
               <button
-                className="boton-logout"
+                className="boton boton--primario"
                 onClick={logout}
               >
-                Cerrar sesión
+                Cerrar Sesión
               </button>
             </>
           ) : (
-            <Link to="/login">
-              Ingresar
-            </Link>
+            <>
+              <Link to="/registro">Registrarme</Link>
+              <Link to="/login">Ingresar</Link>
+            </>
           )}
         </div>
 
