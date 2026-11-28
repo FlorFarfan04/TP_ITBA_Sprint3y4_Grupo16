@@ -57,17 +57,26 @@ function Navbar({ cantidad }) {
           )}
         </ul>
 
-        <span className="boton-carrito">
+        <Link
+          to="/carrito"
+          className="boton-carrito"
+          aria-current={location.pathname === "/carrito" ? "page" : undefined}
+          aria-label={`Ver carrito, ${cantidad} productos`}
+        >
           Carrito (<span id="contador-carrito">{cantidad}</span>)
-        </span>
+        </Link>
 
         <div className="nav-usuario">
           {usuario ? (
             <>
               <Link
                 to="/perfil"
+                aria-current={location.pathname === "/perfil" ? "page" : undefined}
               >
                 Mi perfil
+              </Link>
+              <Link to="/mis-pedidos" aria-current={location.pathname === "/mis-pedidos" ? "page" : undefined}>
+                Mis pedidos
               </Link>
               
               <button

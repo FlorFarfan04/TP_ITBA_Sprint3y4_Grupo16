@@ -14,6 +14,9 @@ import Registro from "./pages/Registro.jsx";
 import Perfil from "./pages/Perfil.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
+import { useCart } from "./context/CartContext.jsx";
+import Carrito from "./pages/Carrito.jsx";
+import MisPedidos from "./pages/MisPedidos.jsx";
 
 function DetalleProducto({ onAgregar, onEliminar }) {
   const { id } = useParams();
@@ -74,8 +77,8 @@ function DetalleProducto({ onAgregar, onEliminar }) {
 function App() {
   const navigate = useNavigate();
   const { token } = useAuth();
+  const { addItem, cantidad } = useCart();
 
-  const [carrito, setCarrito] = useState([]);
   const [productos, setProductos] = useState([]);
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -103,9 +106,7 @@ function App() {
     cargarProductos();
   }, []);
 
-  function agregarAlCarrito(producto) {
-    setCarrito((actual) => [...actual, producto]);
-  }
+  const agregarAlCarrito = addItem;
 
   function irA(nuevaVista) {
     const rutas = {
@@ -163,7 +164,7 @@ function App() {
 
   return (
     <>
-      <Navbar cantidad={carrito.length} />
+      <Navbar cantidad={cantidad} />
 
       <main>
         <Routes>
@@ -214,6 +215,8 @@ function App() {
             element={<ContactForm />}
           />
 
+          <Route path="/carrito" element={<Carrito />} />
+
           <Route
             path="/admin/crear-producto"
             element={
@@ -247,6 +250,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Perfil />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/mis-pedidos"
+            element={
+              <ProtectedRoute>
+                <MisPedidos />
               </ProtectedRoute>
             }
           />

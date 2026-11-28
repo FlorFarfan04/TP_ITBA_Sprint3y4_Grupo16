@@ -129,6 +129,7 @@ p {
 }
 
 .boton-carrito {
+  display: inline-block;
   border: 1px solid #f5e6d3;
   padding: 0.4rem 0.7rem;
   font-size: 0.9rem;
@@ -136,13 +137,82 @@ p {
   color: #f5e6d3;
 }
 
+.boton-carrito[aria-current="page"],
+.nav-usuario a[aria-current="page"] {
+  color: #d4a437;
+}
+
+.carrito { 
+  padding-top: 2rem; 
+  padding-bottom: 3rem; 
+}
+
+.carrito h1 { 
+  margin-bottom: 1.5rem; 
+}
+
+.carrito__mensaje {
+  margin-bottom: 1.25rem;
+}
+
+.carrito__enlace-login {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.carrito__lista { 
+  display: grid; 
+  gap: 0.75rem; 
+}
+
+.carrito__item { 
+  display: grid; 
+  grid-template-columns: minmax(0, 1fr) 13rem 12rem 6rem; 
+  align-items: center; 
+  gap: 1rem; 
+  padding: 1rem; 
+  border: 1px solid #a0522d; 
+  border-radius: 12px; 
+  background: #fffdf9; 
+}
+
+.carrito__item h2 { 
+  font-size: 1.1rem; 
+}
+
+.carrito__item label { 
+  display: flex; 
+  align-items: center; 
+  gap: 0.5rem; 
+  white-space: nowrap; 
+}
+
+.carrito__item input { 
+  width: 5rem; 
+  padding: 0.35rem; 
+}
+
+.carrito__item > strong { 
+  text-align: right; 
+}
+
+.carrito__total { 
+  margin-top: 1.25rem; 
+  font-size: 1.25rem; 
+  font-weight: 700; 
+  text-align: right; 
+}
 
 .nav-usuario {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
-  color:#a0522d;
+  color: #a0522d;
+}
+
+.nav-usuario a {
+  color: #a0522d;
 }
 
 .hero {
@@ -521,6 +591,54 @@ p.estado-carga {
   }
 }
 
+@media (max-width: 1023px) {
+  .nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.65rem 0.85rem;
+  }
+
+  .nav__marca {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  .nav__toggle {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .boton-carrito {
+    grid-column: 2;
+    justify-self: end;
+    margin-left: 0;
+  }
+
+  .nav__menu {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin: 0;
+  }
+
+  .nav__checkbox:checked ~ .nav__menu {
+    display: flex;
+  }
+
+  .nav-usuario {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    min-width: 0;
+    gap: 0.75rem;
+  }
+
+  .nav-usuario .boton {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
 @media (min-width: 640px) {
   #catalogo { 
     padding: 3rem 2rem 4rem; 
@@ -537,7 +655,22 @@ p.estado-carga {
   }
 }
 
-@media (min-width: 780px) {
+@media (max-width: 1023px) {
+  .carrito__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .carrito__item > div {
+    grid-column: 1 / -1;
+  }
+
+  .carrito__item > button {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+}
+
+@media (min-width: 1024px) {
   .nav__toggle { 
     display: none; 
   }
@@ -570,6 +703,7 @@ p.estado-carga {
     flex: 0 1 26rem; 
     margin: 0; 
   }
+
 }
 
 @media (min-width: 1024px) {
@@ -715,7 +849,21 @@ label.formulario__campo {
 
 .perfil {
   width: min(100%, 32rem);
+  min-width: 0;
   margin: 0 auto;
+}
+
+.seccion--perfil {
+  min-height: 65vh;
+  padding: clamp(2rem, 6vw, 4rem) 1rem;
+}
+
+.perfil__datos div {
+  min-width: 0;
+}
+
+.perfil__datos dd {
+  overflow-wrap: anywhere;
 }
 
 .perfil__datos {
@@ -741,4 +889,62 @@ label.formulario__campo {
 
 .perfil__datos dd {
   margin: 0.2rem 0 0;
+}
+
+.mis-pedidos {
+  max-width: 52rem;
+}
+
+.mis-pedidos__lista {
+  display: grid;
+  gap: 1rem;
+}
+
+.mis-pedidos__pedido {
+  padding: 1.25rem;
+  border: 1px solid #a0522d;
+  border-radius: 12px;
+  background: #fffdf9;
+}
+
+.mis-pedidos__encabezado,
+.mis-pedidos__items li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.mis-pedidos__encabezado {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5c8ad;
+}
+
+.mis-pedidos__encabezado h2 {
+  font-size: 1.1rem;
+}
+
+.mis-pedidos__items {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.mis-pedidos__items li span:last-child {
+  white-space: nowrap;
+}
+
+.mis-pedidos__vacio {
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .mis-pedidos__pedido {
+    padding: 1rem;
+  }
+
+  .mis-pedidos__encabezado,
+  .mis-pedidos__items li {
+    align-items: flex-start;
+  }
 }
